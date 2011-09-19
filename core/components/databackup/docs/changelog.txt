@@ -1,0 +1,8 @@
+Changelog for DataBackup
+
+================================================================
+- 1.0.1pl
+ Fixed file case naming error.  This would have caused some Unix/Linux trouble.
+
+================================================================
+- Initial release 1.0pl
