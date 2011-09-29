@@ -79,7 +79,37 @@ Class DBBackup {
      * @var Array
      */
     protected $config = array();
+    /**
+     *
+     * To include only these tables 
+     * @var Array
+     */
+    protected $includeTables = array();
+    /**
+     *
+     * True include only these tables, false don't use include 
+     * @var boolean
+     */
+    protected $useIncludeTables = false;
 	/**
+     *
+     * To exclude only these tables 
+     * @var Array
+     */
+    protected $excludeTables = array();
+    /**
+     *
+     * True exclude only these tables, false don't use exclude 
+     * @var boolean
+     */
+    protected $useExcludeTables = false;
+    /**
+     *
+     * List of files that are written, folder => path, database => path, tables => array( names => path) 
+     * @var Array
+     */
+    protected $filePathData = array();
+    /**
 	 *
 	 * The main function
 	 * @method DBBackup
@@ -100,7 +130,9 @@ Class DBBackup {
                 'use_drop' => true,
                 'connect' => false,
                 'database' => 'modx',
-                'create_database' => false
+                'create_database' => false,
+                'includeTables' => null,
+                'excludeTables' => null
             );
             
 
@@ -140,6 +172,14 @@ Class DBBackup {
         } else {
             $this->dbName = $this->config['database'];
         }
+        // set the include/exclude if any
+        if ( !empty($this->config['includeTables']) ) {
+            $this->includeTables = explode(',',$this->config['includeTables']);
+            $this->useIncludeTables = true;
+        } elseif ( !empty($this->config['excludeTables']) ) {
+            $this->excludeTables = explode(',',$this->config['excludeTables']);
+            $this->useExcludeTables = true;
+        } 
 	}
 
 	/**
@@ -161,12 +201,47 @@ Class DBBackup {
 		}
 		return true;
 	}
+    /**
+     * @description returns the folder/directory path that was created on for the backup files
+     * @return string
+     */
+    public function folderPath() {
+        if ( isset($this->filePathData['folder'])) {
+            return $this->filePathData['folder'];
+        } 
+        return null;
+    }
+    /**
+     * @description returns the database file path that was created on for the backup
+     * @return string
+     */
+    public function DBFilePath() {
+        if ( isset($this->filePathData['database'])) {
+            return $this->filePathData['database'];
+        } 
+        return null;
+    }
+    /**
+     * @description returns the database table file path that was created on for the backup
+     * @param (string) the full table name
+     * @return string
+     */
+    public function tableFilePath($table) {
+        if ( isset($this->filePathData['tables'][$table])) {
+            return $this->filePathData['tables'][$table];
+        } 
+        return null;
+    }
+    /**
+     * Get the errors
+     * @return string
+     */
     public function getErrors(){
         return implode(', ', $this->error);
     }
     /**
      * Purge file records
-     * 
+     * @return void
      */
     public function purge($seconds=1814400){// 21 days is the default
         
@@ -237,8 +312,7 @@ Class DBBackup {
 			return false;
 		}
 	}
-    
-	/**
+    /**
 	 *
 	 * Generate backup string
 	 * @uses Private use
@@ -252,8 +326,9 @@ Class DBBackup {
             $this->final = $this->config['comment_prefix'].'RESTORING TABLES '.$tbl['name'].$this->config['comment_suffix'].$this->config['new_line'];
         }
 	    // create base folder - DB_backup_time()
-	    if ( $this->config['write_file'] ) {
+	    if ( $this->config['write_file'] || $this->config['write_table_files'] ) {
 	        $dir = $this->config['base_path'].''.$this->dbName.'_'.date('Y_m_d').'__'.time().'/';
+            $this->filePathData['folder'] = $dir;
     	    if( !is_dir($dir) ){
                 mkdir($dir);
             }
@@ -264,14 +339,16 @@ Class DBBackup {
 			$table_sql .= $this->config['comment_prefix'].'INSERTING DATA INTO '.$tbl['name'].$this->config['comment_suffix'].$this->config['new_line'];
 			$table_sql .= $tbl['data'].$this->config['new_line'].$this->config['new_line'].$this->config['new_line'];
 			$this->final .= $table_sql;
-            // write to file
-            if ( $this->config['write_file'] && $this->config['write_table_files'] ) {
+            // write table to file
+            if ( $this->config['write_table_files'] ) {
                 file_put_contents($dir.$tbl['name'].'.sql', $table_sql );
+                $this->filePathData['tables'][$tbl['name']] = $dir.$tbl['name'].'.sql';
             }
 		}
 		$this->final .= $this->config['comment_prefix'].' THE END'.$this->config['new_line'].$this->config['comment_suffix'].$this->config['new_line'];
         if ( $this->config['write_file'] ) {
     	    file_put_contents($dir.'complete_db_backup.sql', $this->final );
+            $this->filePathData['database'] = $dir.'complete_db_backup.sql';
 	    }
 	}
 	/**
@@ -285,6 +362,18 @@ Class DBBackup {
 			$tbs = $stmt->fetchAll();
 			$i=0;
 			foreach($tbs as $table){
+			    //echo '<br>Table: '. $table[0];
+			    if ( $this->useIncludeTables ) {
+			        //echo ' - useIncludes';
+			        if ( !in_array($table[0],$this->includeTables)) {
+			            //echo ' - exclude me';
+			            continue;
+			        }
+			    } elseif ( $this->useExcludeTables ) {
+                    if ( in_array($table[0],$this->excludeTables)) {
+                        continue;
+                    }
+                }
 				$this->tables[$i]['name'] = $table[0];
 				$this->tables[$i]['create'] = $this->_getColumns($table[0]);
 				$this->tables[$i]['data'] = $this->_getData($table[0]);
