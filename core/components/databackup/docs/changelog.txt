@@ -1,8 +1,13 @@
 Changelog for DataBackup
 
 ================================================================
+- 1.1pl 9-30-2011
+  #2 Added includeTables and excludeTables options
+  #1 Put up docs: http://rtfm.modx.com/display/ADDON/Databackup
+
+================================================================
 - 1.0.1pl
  Fixed file case naming error.  This would have caused some Unix/Linux trouble.
 
 ================================================================
-- Initial release 1.0pl
+- Initial release 1.0pl 8-12-2011
