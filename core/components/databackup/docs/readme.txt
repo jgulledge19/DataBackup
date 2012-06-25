@@ -1,8 +1,8 @@
 --------------------
 DataBackup
 --------------------
-Version: 1.1 pl
-Date: 8/16/2011
+Version: 1.1.2 pl
+Date: 6/25/2012
 Author: Joshua Gulledge and the php class is based on code from: Raul Souza Silva (raul.3k@gmail.com) http://www.phpclasses.org/browse/file/33388.html
 License: GNU GPLv2 (or later at your option)
 

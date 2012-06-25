@@ -319,11 +319,11 @@ Class DBBackup {
 	 */
 	protected function _generate(){
 	    if ( $this->config['create_database'] ) {
-	        $this->final = $this->config['comment_prefix'].'CREATING DATABASE '.$tbl['name'].$this->config['comment_suffix'].$this->config['new_line'];
+	        $this->final = $this->config['comment_prefix'].'CREATING DATABASE '.$this->dbName.' '.$this->config['comment_suffix'].$this->config['new_line'];
             $this->final .= 'CREATE DATABASE ' . $this->dbName.";".$this->config['new_line'];
             $this->final .= 'USE ' . $this->dbName.';'.$this->config['new_line'].$this->config['new_line'];
         } else {
-            $this->final = $this->config['comment_prefix'].'RESTORING TABLES '.$tbl['name'].$this->config['comment_suffix'].$this->config['new_line'];
+            $this->final = $this->config['comment_prefix'].'RESTORING TABLES '.$this->dbName.' '.$this->config['comment_suffix'].$this->config['new_line'];
         }
 	    // create base folder - DB_backup_time()
 	    if ( $this->config['write_file'] || $this->config['write_table_files'] ) {

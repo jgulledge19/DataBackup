@@ -4,12 +4,6 @@
 $path = $modx->getOption('core_path').'components/databackup/';
 require_once $path.'model/mysql/dbbackup.class.php';
 
-/*
-$f = require_once $modx->getOption('core_path').'components/contactpages/elements/snippets/snippet.contactGeneral.php';
-return $f;
-*/
-
-
 // back up my modx database:
 $db = new DBBackup($modx );
 $backup = $db->backup();
