@@ -70,7 +70,7 @@ $properties = array(
           'desc' => 'prop_databackup.newLine_desc',
           'type' => 'textfield',
           'options' => '',
-          'value' => '\n',
+          'value' => "\n",
           'lexicon' => 'databackup:properties'
           ),
     array(
