@@ -24,7 +24,7 @@ if ( $write_table_files === 'false' ) {
     $output .= ' <br>Do not write table files<br>';
 }
 // these are to change how the data file is written
-$comment_prefix = $modx->getOption('commentPrefix', $scriptProperties, '--');
+$comment_prefix = $modx->getOption('commentPrefix', $scriptProperties, '-- ');
 $comment_suffix = $modx->getOption('commentSuffix', $scriptProperties, '');
 $new_line = $modx->getOption('newLine', $scriptProperties, "\n");
 // use the sql drop command

@@ -121,7 +121,7 @@ Class DBBackup {
 	    $this->modx = $modx;
 	    $this->handler = $this->modx->pdo;
         $defaults = array(
-                'comment_prefix' => '--',
+                'comment_prefix' => '-- ',
                 'comment_suffix' => '',
                 'new_line' => "\n",
                 'base_path' => MODX_CORE_PATH.'components/databackup/dumps/',
