@@ -6,8 +6,10 @@ require_once $path.'model/mysql/dbbackup.class.php';
 
 $output = '';
 // back up my modx database:
-$data_folder = $modx->getOption('dataFolder', $scriptProperties, $modx->getOption('databackup.folder', null, $path.'dumps/'));
-$purge_time = $modx->getOption('purge', $scriptProperties, $modx->getOption('databackup.purge', null, 1814400));
+$data_folder = $scriptProperties['dataFolder'];
+if (empty($data_folder)) $data_folder = $modx->getOption('databackup.folder', null, $path.'dumps/');
+$purge_time = $scriptProperties['purge'];
+if (empty($purge)) $purge = $modx->getOption('databackup.purge', null, 1814400);
 // includeTables should be a comma separtaed list
 $includeTables = $modx->getOption('includeTables', $scriptProperties, NULL);
 // excludeTables should be a comma separtaed list
