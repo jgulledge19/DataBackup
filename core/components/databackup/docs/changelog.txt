@@ -1,5 +1,11 @@
 Changelog for DataBackup
 ================================================================
+- 1.1.3pl 9-28-2012
+   - Fixed #3 set default db name from MODX settings/api rather than hard coded 
+   - Several more fixes and usability improvements thanks to yurkobb
+   - NOTE Setting change to: databackup.purge from: databackup.pruge 
+
+================================================================
 - 1.1.2pl 6-25-2012
    - Added the System Settings to the build script 
 
