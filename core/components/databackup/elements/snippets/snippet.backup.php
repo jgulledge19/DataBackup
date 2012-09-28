@@ -32,7 +32,7 @@ $use_drop = $modx->getOption('useDrop', $scriptProperties, true);
 if ( $use_drop === 'false' ) {
     $use_drop = false;
 }
-$database = $modx->getOption('database', $scriptProperties, 'modx');
+$database = $modx->getOption('database', $scriptProperties, $modx->getOption('dbname'));
 // use the sql create database command
 $create_database = $modx->getOption('createDatabase', $scriptProperties, false);
 if ( $create_database === 'false' ) {

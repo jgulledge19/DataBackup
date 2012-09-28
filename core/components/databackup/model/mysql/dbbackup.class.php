@@ -129,7 +129,7 @@ Class DBBackup {
                 'write_table_files' => true,
                 'use_drop' => true,
                 'connect' => false,
-                'database' => 'modx',
+                'database' => $modx->getOption('dbname'),
                 'create_database' => false,
                 'includeTables' => null,
                 'excludeTables' => null
