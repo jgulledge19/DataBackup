@@ -44,9 +44,9 @@ $snippets[1]->fromArray(array(
     'description' => 'Create a SQL dump of your MODX database.',
     'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/snippet.backup.php'),
 ),'',true,true);
-//$properties = include $sources['data'].'/properties/properties.mysnippet1.php';
-//$snippets[1]->setProperties($properties);
-//unset($properties);
+$properties = include $sources['data'].'/properties/properties.backup.php';
+$snippets[1]->setProperties($properties);
+unset($properties);
 
 $snippets[2]= $modx->newObject('modSnippet');
 $snippets[2]->fromArray(array(

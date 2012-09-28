@@ -21,9 +21,9 @@ $settings['databackup.folder']->fromArray(array (
     'area' => 'File System',
 ), '', true, true);
 
-$settings['databackup.pruge']= $modx->newObject('modSystemSetting');
-$settings['databackup.pruge']->fromArray(array (
-    'key' => 'databackup.pruge',
+$settings['databackup.purge']= $modx->newObject('modSystemSetting');
+$settings['databackup.purge']->fromArray(array (
+    'key' => 'databackup.purge',
     'value' => '1814400',
     'xtype' => 'textfield',
     'namespace' => 'databackup',

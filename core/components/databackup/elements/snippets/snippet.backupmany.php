@@ -9,7 +9,7 @@ $db = new DBBackup($modx );
 $backup = $db->backup();
 $output = '';
 if($backup){
-    $output .= 'The MODX data has been back up';
+    $output .= 'The MODX data has been backed up';
 } else {
     $output .= 'An error has ocurred and MODX did not get backed up correctly: '.$db->getErrors();
 }
@@ -27,7 +27,7 @@ $db = new DBBackup($modx, array(
 ));
 $backup = $db->backup();
 if($backup){
-    $output .= '<br>The website_db data has been back up';
+    $output .= '<br>The website_db data has been backed up';
 } else {
     $output .= '<br>An error has ocurred and website_db did not get backed up correctly: '.$db->getErrors();
 }
@@ -46,7 +46,7 @@ $db = new DBBackup($modx, array(
 ));
 $backup = $db->backup();
 if($backup){
-    $output .= '<br>The MODX Test data has been back up';
+    $output .= '<br>The MODX Test data has been backed up';
 } else {
     $output .= '<br>An error has ocurred and MODX Test did not get backed up correctly: '.$db->getErrors();
 }
