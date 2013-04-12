@@ -247,6 +247,29 @@ Class DBBackup {
         
         // purge data older then 3 weeks:
         $data_folder = $this->config['base_path'];
+        
+        $path = dirname($data_folder.'/file.txt');
+        $windows_path = str_replace('\\', '/', $path);
+        $core = dirname(MODX_CORE_PATH.'/file.txt');
+        $windows_core = str_replace('\\', '/', $core);
+        
+        $manager = dirname(MODX_MANAGER_PATH.'/file.txt');
+        $windows_manager = str_replace('\\', '/', $manager);
+        
+        $assets = dirname(MODX_ASSETS_PATH.'/file.txt');
+        $windows_assets = str_replace('\\', '/', $assets);
+        
+        // do not allow in the core path
+        if ( $path == $core || $windows_core == $windows_path || strpos($core, $path) !== false ||  strpos($windows_core, $windows_path) !== false || $path == '' ) {
+            $this->modx->log(xPDO::LOG_LEVEL_ERROR, '[DBbackup] ERROR cannot purge: '.$data_folder.' it is with in the core path: '.MODX_CORE_PATH);
+            return false;
+        } elseif ( $path == $manager || $windows_manager == $windows_path || strpos($manager, $path) !== false ||  strpos($windows_manager, $windows_path) !== false ) {
+            $this->modx->log(xPDO::LOG_LEVEL_ERROR, '[DBbackup] ERROR cannot purge: '.$data_folder.' it is with in the manager path: '.MODX_MANAGER_PATH);
+            return false;
+        } elseif ( $path == $assets || $windows_assets == $windows_path || strpos($assets, $path) !== false ||  strpos($windows_assets, $windows_path) !== false ) {
+            $this->modx->log(xPDO::LOG_LEVEL_ERROR, '[DBbackup] ERROR cannot purge: '.$data_folder.' it is with in the assets path: '.MODX_ASSETS_PATH);
+            return false;
+        }
         $open_dir = opendir( $data_folder ) ;
         $last_date = time() - $seconds;// 3600*24*21;// 21 days
         

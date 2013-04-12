@@ -1,5 +1,9 @@
 Changelog for DataBackup
 ================================================================
+- 1.1.4pl 4-12-2013
+    - #5 Added safeguard not to delete: core, manager and assets paths on purge command 
+
+================================================================
 - 1.1.3pl 9-28-2012
    - Fixed #3 set default db name from MODX settings/api rather than hard coded 
    - Several more fixes and usability improvements thanks to yurkobb
