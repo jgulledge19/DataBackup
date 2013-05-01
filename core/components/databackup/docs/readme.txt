@@ -1,8 +1,8 @@
 --------------------
 DataBackup
 --------------------
-Version: 1.1.4 pl
-Date: 4/12/2013
+Version: 1.1.5 pl
+Date: 5/1/2013
 Author: Joshua Gulledge and the php class is based on code from: Raul Souza Silva (raul.3k@gmail.com) http://www.phpclasses.org/browse/file/33388.html
 License: GNU GPLv2 (or later at your option)
 
@@ -27,14 +27,14 @@ See: http://www.jasoncoward.com/technology/2010/10/simple-content-caching-with-g
 This is a simple backup your site every 24 hours(assuming the page is visited) or less if you flush the cache.  It will also purge
 the backups older then 21 days.
 
-WARNING
-Becareful were you make the file path for the purge setting.  If you place this in an existing folder all 
-files older then the purge date will be delete.  It is recommended that you create a new folder for your backups
-that are behind the public web.
-
 [[!getCache?
     &element=`backup`
     &cacheExpires=`86400`
 ]]
 
 View complete docs: http://rtfm.modx.com/display/ADDON/Databackup             
+
+WARNING
+Becareful were you make the file path for the purge setting.  If you place this in an existing folder all 
+files older then the purge date will be delete.  It is recommended that you create a new folder for your backups
+that are behind the public web.
