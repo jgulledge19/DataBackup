@@ -8,7 +8,7 @@ $output = '';
 // back up my modx database:
 $data_folder = $scriptProperties['dataFolder'];
 if (empty($data_folder)) $data_folder = $modx->getOption('databackup.folder', null, $path.'dumps/');
-$purge_time = $scriptProperties['purge'];
+$purge = $scriptProperties['purge'];
 if (empty($purge)) $purge = $modx->getOption('databackup.purge', null, 1814400);
 // includeTables should be a comma separtaed list
 $includeTables = $modx->getOption('includeTables', $scriptProperties, NULL);
@@ -63,7 +63,7 @@ if($backup){
 } else {
     $output .= 'An error has ocurred and MODX did not get backed up correctly: '.$db->getErrors();
 }
-$db->purge($purge_time);
+$db->purge($purge);
 
 return $output;
 
