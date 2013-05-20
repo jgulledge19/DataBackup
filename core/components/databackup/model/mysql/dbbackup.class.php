@@ -356,21 +356,40 @@ Class DBBackup {
                 mkdir($dir);
             }
         }
+        // start the large SQL dump file:
+        if ( $this->config['write_file'] ) {
+            file_put_contents($dir.'complete_db_backup.sql', $this->final );
+            $this->filePathData['database'] = $dir.'complete_db_backup.sql';
+        }
 		foreach ($this->tables as $tbl) {
 		    $table_sql = $this->config['comment_prefix'].'CREATING TABLE '.$tbl['name'].$this->config['comment_suffix'].$this->config['new_line'];
 			$table_sql .= $tbl['create'] . ";".$this->config['new_line'].$this->config['new_line'];
 			$table_sql .= $this->config['comment_prefix'].'INSERTING DATA INTO '.$tbl['name'].$this->config['comment_suffix'].$this->config['new_line'];
-			$table_sql .= $tbl['data'].$this->config['new_line'].$this->config['new_line'].$this->config['new_line'];
-			$this->final .= $table_sql;
+			$table_sql .= $this->_getData($tbl['name']).$this->config['new_line'].$this->config['new_line'].$this->config['new_line'];
+			// $this->final .= $table_sql;// 1.1.6
             // write table to file
             if ( $this->config['write_table_files'] ) {
                 file_put_contents($dir.$tbl['name'].'.sql', $table_sql );
                 $this->filePathData['tables'][$tbl['name']] = $dir.$tbl['name'].'.sql';
             }
+            // added 1.1.6:
+            if ( $this->config['write_file'] ) {
+                file_put_contents(
+                    $dir.'complete_db_backup.sql', 
+                    $table_sql,
+                    FILE_APPEND
+                );
+            }
+            // reset memory?
+            $table_sql = null;
 		}
-		$this->final .= $this->config['comment_prefix'].' THE END'.$this->config['new_line'].$this->config['comment_suffix'].$this->config['new_line'];
+		//$this->final .= $this->config['comment_prefix'].' THE END'.$this->config['new_line'].$this->config['comment_suffix'].$this->config['new_line'];
         if ( $this->config['write_file'] ) {
-    	    file_put_contents($dir.'complete_db_backup.sql', $this->final );
+            file_put_contents(
+                $dir.'complete_db_backup.sql', 
+    	        $this->config['comment_prefix'].' THE END'.$this->config['new_line'].$this->config['comment_suffix'].$this->config['new_line'],
+    	        FILE_APPEND
+            );
             $this->filePathData['database'] = $dir.'complete_db_backup.sql';
 	    }
 	}
@@ -399,7 +418,7 @@ Class DBBackup {
                 }
 				$this->tables[$i]['name'] = $table[0];
 				$this->tables[$i]['create'] = $this->_getColumns($table[0]);
-				$this->tables[$i]['data'] = $this->_getData($table[0]);
+				//$this->tables[$i]['data'] = $this->_getData($table[0]);
 				$i++;
 			}
 			unset($stmt);

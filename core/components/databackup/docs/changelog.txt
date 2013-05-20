@@ -1,5 +1,9 @@
 Changelog for DataBackup
 ================================================================
+- 1.1.6pl 5-20-2013
+    - #9 Memory & performance improvements
+    
+================================================================
 - 1.1.5pl 5-1-2013
     - #8 Fix passing the purge time set in snippet
     
