@@ -6,10 +6,12 @@ require_once $path.'model/mysql/dbbackup.class.php';
 
 $output = '';
 // back up my modx database:
-$data_folder = $scriptProperties['dataFolder'];
-if (empty($data_folder)) $data_folder = $modx->getOption('databackup.folder', null, $path.'dumps/');
-$purge = $scriptProperties['purge'];
-if (empty($purge)) $purge = $modx->getOption('databackup.purge', null, 1814400);
+$data_folder = $modx->getOption('dataFolder', $scriptProperties, $modx->getOption('databackup.folder', null, $path.'dumps'.DIRECTORY_SEPARATOR));
+
+// added 1.7
+$temp_folder = $modx->getOption('tempFolder', $scriptProperties, $modx->getOption('databackup.temp', null, $data_folder.'temp'.DIRECTORY_SEPARATOR));
+
+$purge = $modx->getOption('purge', $scriptProperties, $modx->getOption('databackup.purge', null, 1814400));
 // includeTables should be a comma separtaed list
 $includeTables = $modx->getOption('includeTables', $scriptProperties, NULL);
 // excludeTables should be a comma separtaed list
@@ -47,6 +49,7 @@ $db = new DBBackup($modx,
         'comment_suffix' => $comment_suffix,
         'new_line' => $new_line,
         'base_path' => $data_folder,
+        'temp_path' => $temp_folder,
         'write_file' => $write_file,
         'write_table_files' => $write_table_files,
         'use_drop' => $use_drop,
@@ -63,8 +66,9 @@ if($backup){
 } else {
     $output .= 'An error has ocurred and MODX did not get backed up correctly: '.$db->getErrors();
 }
-$db->purge($purge);
-
+if ( $purge > 0 ) {
+    $db->purge($purge);
+}
 return $output;
 
 // restore: http://efreedom.com/Question/1-898440/PDO-SQL-Server-RESTORE-DATABASE-Query-Wait-Finished

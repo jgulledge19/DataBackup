@@ -10,6 +10,14 @@ $properties = array(
           'lexicon' => 'databackup:properties'
           ),
     array(
+          'name' => 'tempFolder',
+          'desc' => 'prop_databackup.tempFolder_desc',
+          'type' => 'textfield',
+          'options' => '',
+          'value' => '',
+          'lexicon' => 'databackup:properties'
+          ),
+    array(
           'name' => 'purge',
           'desc' => 'prop_databackup.purge_desc',
           'type' => 'textfield',

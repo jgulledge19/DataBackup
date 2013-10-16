@@ -15,7 +15,16 @@ $settings = array();
 $settings['databackup.folder']= $modx->newObject('modSystemSetting');
 $settings['databackup.folder']->fromArray(array (
     'key' => 'databackup.folder',
-    'value' => '{core_path}components/databackup/dumps/ ',
+    'value' => '{core_path}components/databackup/dumps/',
+    'xtype' => 'textfield',
+    'namespace' => 'databackup',
+    'area' => 'File System',
+), '', true, true);
+
+$settings['databackup.temp']= $modx->newObject('modSystemSetting');
+$settings['databackup.temp']->fromArray(array (
+    'key' => 'databackup.temp',
+    'value' => '{core_path}components/databackup/dumps/temp/',
     'xtype' => 'textfield',
     'namespace' => 'databackup',
     'area' => 'File System',

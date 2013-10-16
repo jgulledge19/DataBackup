@@ -1,5 +1,12 @@
 Changelog for DataBackup
 ================================================================
+- 1.1.7pl 10-16-2013
+    - #9 Memory improvements
+    - added new property: tempFolder ~ temp file directory that holds data as MODX builds backup
+    - added new setting: temp ~ same as the tempFolder property
+    - allow spacing in includeTables and excludeTables ~ they will be auto removed
+    
+================================================================
 - 1.1.6pl 5-20-2013
     - #9 Memory & performance improvements
     

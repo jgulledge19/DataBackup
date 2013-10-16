@@ -117,14 +117,15 @@ Class DBBackup {
 	 * @param Array $args{host, driver, user, password, database}
 	 * @example $db = new DBBackup(array('host'=>'my_host', 'driver'=>'bd_type(mysql)', 'user'=>'db_user', 'password'=>'db_password', 'database'=>'db_name'));
 	 */
-	public function __construct($modx, $config=array()){
-	    $this->modx = $modx;
+	public function __construct(&$modx, $config=array()){
+	    $this->modx = &$modx;
 	    $this->handler = $this->modx->pdo;
         $defaults = array(
                 'comment_prefix' => '-- ',
                 'comment_suffix' => '',
                 'new_line' => "\n",
                 'base_path' => MODX_CORE_PATH.'components/databackup/dumps/',
+                'temp_path' => MODX_CORE_PATH.'components/databackup/dumps/tmp/',
                 'write_file' => true,
                 'write_table_files' => true,
                 'use_drop' => true,
@@ -138,7 +139,7 @@ Class DBBackup {
 
         $this->config = array_merge( $defaults, $config );
 	    if ( isset($this->config['connect']) && $this->config['connect'] ) {
-	        
+	        echo 'Connect  ';
     	    if( empty($this->config['host'])) {
     	        $this->error[] = 'Parameter host missing';
     	    }
@@ -172,12 +173,21 @@ Class DBBackup {
         } else {
             $this->dbName = $this->config['database'];
         }
+        
         // set the include/exclude if any
         if ( !empty($this->config['includeTables']) ) {
-            $this->includeTables = explode(',',$this->config['includeTables']);
+            $in = explode(',',$this->config['includeTables']);
+            // remove white space
+            foreach ( $in as $table ) {
+                $this->includeTables[] = trim($table);
+            }
             $this->useIncludeTables = true;
         } elseif ( !empty($this->config['excludeTables']) ) {
-            $this->excludeTables = explode(',',$this->config['excludeTables']);
+            $ex = explode(',',$this->config['excludeTables']);
+            // remove white space
+            foreach ( $ex as $table ) {
+                $this->excludeTables[] = trim($table);
+            }
             $this->useExcludeTables = true;
         } 
 	}
@@ -187,14 +197,20 @@ Class DBBackup {
 	 * Call this function to get the database backup
 	 * @example DBBackup::backup();
 	 */
-	public function backup(){
+	public function backup() {
 	    if ( count($this->error) > 0 ){
 	        //echo '<br>Error - backup: '.$this->dbName.' L:'.__LINE__;
 	        return false;
 	    }
         //echo '<br>Database: '.$this->dbName.' L: '.__LINE__;
 		$this->_getTables();
+        if ( !is_dir($this->config['temp_path']) ) {
+            mkdir($this->config['temp_path']);
+        }
 		$this->_generate();
+        
+        // clean up temp:
+        $this->purge(0, 'temp_path');
 		//return $this->final;
 		if ( count($this->error)>0 ) {
 			return false;//, 'msg'=>$this->error);
@@ -241,12 +257,14 @@ Class DBBackup {
     }
     /**
      * Purge file records
+     * @param (INT) $seconds
+     * @param (String) $path_name
      * @return void
      */
-    public function purge($seconds=1814400){// 21 days is the default
+    public function purge($seconds=1814400, $path_name='base_path'){// 21 days is the default
         
         // purge data older then 3 weeks:
-        $data_folder = $this->config['base_path'];
+        $data_folder = $this->config[$path_name];
         
         $path = dirname($data_folder.'/file.txt');
         $windows_path = str_replace('\\', '/', $path);
@@ -286,6 +304,9 @@ Class DBBackup {
                     }
                 }
                 # else files
+                else if ( $path_name == 'temp_path' && is_file($data_folder.$tmp_file) ) {
+                    unlink($data_folder.$tmp_file);
+                }
             }
         }
         closedir($open_dir);
@@ -365,11 +386,20 @@ Class DBBackup {
 		    $table_sql = $this->config['comment_prefix'].'CREATING TABLE '.$tbl['name'].$this->config['comment_suffix'].$this->config['new_line'];
 			$table_sql .= $tbl['create'] . ";".$this->config['new_line'].$this->config['new_line'];
 			$table_sql .= $this->config['comment_prefix'].'INSERTING DATA INTO '.$tbl['name'].$this->config['comment_suffix'].$this->config['new_line'];
-			$table_sql .= $this->_getData($tbl['name']).$this->config['new_line'].$this->config['new_line'].$this->config['new_line'];
+			
+			//$table_sql .= $this->_getData($tbl['name']).$this->config['new_line'].$this->config['new_line'].$this->config['new_line'];
+			$file = $this->_getData($tbl['name']).$this->config['new_line'].$this->config['new_line'].$this->config['new_line'];
+            $data = file_get_contents(trim($file));
 			// $this->final .= $table_sql;// 1.1.6
             // write table to file
             if ( $this->config['write_table_files'] ) {
                 file_put_contents($dir.$tbl['name'].'.sql', $table_sql );
+                // copy file into file:
+                file_put_contents(
+                    $dir.$tbl['name'].'.sql', 
+                    $data,
+                    FILE_APPEND
+                );
                 $this->filePathData['tables'][$tbl['name']] = $dir.$tbl['name'].'.sql';
             }
             // added 1.1.6:
@@ -379,9 +409,17 @@ Class DBBackup {
                     $table_sql,
                     FILE_APPEND
                 );
+                // copy file into file:
+                file_put_contents(
+                    $dir.'complete_db_backup.sql',
+                    $data,
+                    FILE_APPEND
+                );
             }
             // reset memory?
             $table_sql = null;
+            unset($tbl);
+            unset($data);
 		}
 		//$this->final .= $this->config['comment_prefix'].' THE END'.$this->config['new_line'].$this->config['comment_suffix'].$this->config['new_line'];
         if ( $this->config['write_file'] ) {
@@ -401,7 +439,7 @@ Class DBBackup {
 	protected function _getTables(){
 		try {
 			$stmt = $this->handler->query('SHOW TABLES');
-			$tbs = $stmt->fetchAll();
+			$tbs = $stmt->fetchAll(PDO::FETCH_NUM);
 			$i=0;
 			foreach($tbs as $table){
 			    //echo '<br>Table: '. $table[0];
@@ -467,6 +505,8 @@ Class DBBackup {
 			$stmt = $this->handler->query('SELECT * FROM '.$tableName);
 			$q = $stmt->fetchAll(PDO::FETCH_NUM);
 			$data = '';
+            $file = $this->config['temp_path'].$tableName.'.tmp';
+            $count = 0;
 			foreach ($q as $pieces){
 			    $data .= 'INSERT INTO `'. $tableName .'` VALUES ( ';//.' (\'' . implode('\',\'', $pieces) . '\');'.$this->config['new_line'];
 				$str = '';
@@ -483,9 +523,31 @@ Class DBBackup {
 					}
 				}
                 $data .= $str.');'.$this->config['new_line'];
+                $count++;
+                // create temp file:
+                if ( $count >= 1000 ){
+                    file_put_contents(
+                        $file, 
+                        $data,
+                        FILE_APPEND
+                    );
+                    // reset count and data str:
+                    $count = 0;
+                    $data = '';
+                }
 				//$data .= 'INSERT INTO `'. $tableName .'` VALUES '.( is_null($value)).' (\'' . implode('\',\'', $pieces) . '\');'.$this->config['new_line'];
 			}
-			return $data;
+            if ( $count > 0 ){
+                file_put_contents(
+                    $file, 
+                    $data,
+                    FILE_APPEND
+                );
+            }
+            unset($stmt);
+            unset($q);
+            gc_collect_cycles();
+			return $file;
 		} catch (PDOException $e){
 			$this->handler = null;
 			$this->error[] = $e->getMessage();
@@ -493,4 +555,3 @@ Class DBBackup {
 		}
 	}
 }
-?>

@@ -1,6 +1,7 @@
 <?php
 
 $_lang['prop_databackup.dataFolder_desc'] = 'This is the folder path that will save you .sql files to. PHP must have write permissions to this folder.';
+$_lang['prop_databackup.tempFolder_desc'] = 'This is the folder path that will create temp files before saving to .sql. PHP must have write permissions to this folder.';
 $_lang['prop_databackup.purge_desc'] = 'Purge old files that are older then the current time - seconds. Default is 1814400 (21 days).';
 $_lang['prop_databackup.includeTables_desc'] = 'Comma separated list of tables to include. All other tables will be excluded if this option is used.';
 $_lang['prop_databackup.excludeTables_desc'] = 'Comma separated list of tables to exclude. All other tables will be included.';
