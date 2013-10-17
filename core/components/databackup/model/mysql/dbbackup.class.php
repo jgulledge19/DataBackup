@@ -546,7 +546,7 @@ Class DBBackup {
             }
             unset($stmt);
             unset($q);
-            gc_collect_cycles();
+            //gc_collect_cycles();// requires php 5.3+
 			return $file;
 		} catch (PDOException $e){
 			$this->handler = null;
