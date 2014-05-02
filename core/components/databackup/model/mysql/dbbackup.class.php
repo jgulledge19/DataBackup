@@ -500,58 +500,71 @@ Class DBBackup {
 	 * Get the insert data of tables
 	 * @uses Private use
 	 */
-	protected function _getData($tableName){
-		try {
-			$stmt = $this->handler->query('SELECT * FROM '.$tableName);
-			$q = $stmt->fetchAll(PDO::FETCH_NUM);
-			$data = '';
+    protected function _getData($tableName){
+        try {
+            $stmt = $this->handler->query('SELECT * FROM '.$tableName);
+            $q = $stmt->fetchAll(PDO::FETCH_NUM);
+            // echo 'Table: '.$tableName; print_r($q);
+            
+            $data = '';
             $file = $this->config['temp_path'].$tableName.'.tmp';
+            // create empty file: this will purge any system that is caching files
+            file_put_contents(
+                $file, 
+                '',
+                LOCK_EX
+            );
             $count = 0;
-			foreach ($q as $pieces){
-			    $data .= 'INSERT INTO `'. $tableName .'` VALUES ( ';//.' (\'' . implode('\',\'', $pieces) . '\');'.$this->config['new_line'];
-				$str = '';
-				foreach($pieces as &$value){
-				    // &acirc;€™
-					//$value = htmlentities(addslashes($value));
-					if ( !empty($str) ){
-					    $str .= ', ';
-					}
-					if ( is_null($value) ) {
-					    $str .= 'NULL';
-					} else {
+            $data = array();
+            foreach ($q as $pieces){
+                $data[$count] = 'INSERT INTO `'. $tableName .'` VALUES ( ';//.' (\'' . implode('\',\'', $pieces) . '\');'.$this->config['new_line'];
+                $str = '';
+                foreach($pieces as $value){
+                    // &acirc;€™
+                    //$value = htmlentities(addslashes($value));
+                    if ( !empty($str) ){
+                        $str .= ', ';
+                    }
+                    if ( is_null($value) ) {
+                        $str .= 'NULL';
+                    } else {
                         $str .= '\''.addslashes($value).'\'';
-					}
-				}
-                $data .= $str.');'.$this->config['new_line'];
+                    }
+                }
+                $data[$count] .= $str.');'.$this->config['new_line'];
                 $count++;
                 // create temp file:
                 if ( $count >= 1000 ){
                     file_put_contents(
                         $file, 
-                        $data,
+                        implode('', $data),
                         FILE_APPEND
                     );
                     // reset count and data str:
                     $count = 0;
-                    $data = '';
+                    $data = array();
                 }
-				//$data .= 'INSERT INTO `'. $tableName .'` VALUES '.( is_null($value)).' (\'' . implode('\',\'', $pieces) . '\');'.$this->config['new_line'];
-			}
+                //$data .= 'INSERT INTO `'. $tableName .'` VALUES '.( is_null($value)).' (\'' . implode('\',\'', $pieces) . '\');'.$this->config['new_line'];
+            }
             if ( $count > 0 ){
                 file_put_contents(
                     $file, 
-                    $data,
+                    implode('', $data),
                     FILE_APPEND
                 );
+            }
+            if ( $tableName == 'modx_access_context' ) {
+                //echo 'Table: modx_access_context';
+                //exit();
             }
             unset($stmt);
             unset($q);
             //gc_collect_cycles();// requires php 5.3+
-			return $file;
-		} catch (PDOException $e){
-			$this->handler = null;
-			$this->error[] = $e->getMessage();
-			return false;
-		}
-	}
+            return $file;
+        } catch (PDOException $e){
+            $this->handler = null;
+            $this->error[] = $e->getMessage();
+            return false;
+        }
+    }
 }

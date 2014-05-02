@@ -1,4 +1,10 @@
 Changelog for DataBackup
+
+================================================================
+- 1.1.8pl 5-2-2014
+    - Minor issue with wincache or similar where if run to close together
+        the files would append the tmp files, basically doubling the insert records
+    
 ================================================================
 - 1.1.7pl 10-16-2013
     - #9 Memory improvements

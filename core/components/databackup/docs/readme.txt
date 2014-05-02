@@ -1,8 +1,15 @@
+To read:
+    http://www.abbeyworkshop.com/howto/lamp/MySQL_Export_Backup/index.html
+    http://stackoverflow.com/questions/17027980/export-mysql-table-into-sql-format
+    http://steveswanson.wordpress.com/2009/04/21/exporting-and-importing-an-individual-mysql-table/
+    http://www.tutorialspoint.com/mysql/mysql-database-export.htm
+    http://dev.mysql.com/doc/refman/5.7/en/mysqldump.html
+    
 --------------------
 DataBackup
 --------------------
-Version: 1.1.7 pl
-Date: 10/16/2013
+Version: 1.1.8 pl
+Date: 5/2/2014
 Author: Joshua Gulledge and the php class is based on code from: Raul Souza Silva (raul.3k@gmail.com) http://www.phpclasses.org/browse/file/33388.html
 License: GNU GPLv2 (or later at your option)
 
