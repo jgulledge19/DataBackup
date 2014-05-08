@@ -6,7 +6,7 @@ $properties = array(
           'desc' => 'prop_databackup.dataFolder_desc',
           'type' => 'textfield',
           'options' => '',
-          'value' => '',
+          'value' => '[[++databackup.folder]]',
           'lexicon' => 'databackup:properties'
           ),
     array(
@@ -14,7 +14,7 @@ $properties = array(
           'desc' => 'prop_databackup.tempFolder_desc',
           'type' => 'textfield',
           'options' => '',
-          'value' => '',
+          'value' => '[[++databackup.temp]]',
           'lexicon' => 'databackup:properties'
           ),
     array(
@@ -22,7 +22,7 @@ $properties = array(
           'desc' => 'prop_databackup.purge_desc',
           'type' => 'textfield',
           'options' => '',
-          'value' => '',
+          'value' => '[[++databackup.purge]]',
           'lexicon' => 'databackup:properties'
           ),
     array(

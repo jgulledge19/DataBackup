@@ -43,6 +43,7 @@ $snippets[1]->fromArray(array(
     'name' => 'backup',
     'description' => 'Create a SQL dump of your MODX database.',
     'snippet' => getSnippetContent($sources['source_core'].'/elements/snippets/snippet.backup.php'),
+    'property_preprocess' => 1,
 ),'',true,true);
 $properties = include $sources['data'].'/properties/properties.backup.php';
 $snippets[1]->setProperties($properties);
