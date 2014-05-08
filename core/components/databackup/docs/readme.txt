@@ -8,8 +8,8 @@ To read:
 --------------------
 DataBackup
 --------------------
-Version: 1.1.8 pl
-Date: 5/2/2014
+Version: 1.1.9 pl
+Date: 5/8/2014
 Author: Joshua Gulledge and the php class is based on code from: Raul Souza Silva (raul.3k@gmail.com) http://www.phpclasses.org/browse/file/33388.html
 License: GNU GPLv2 (or later at your option)
 
