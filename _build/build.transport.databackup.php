@@ -51,7 +51,7 @@
 /* Set package info be sure to set all of these */
 define('PKG_NAME','Databackup');
 define('PKG_NAME_LOWER','databackup');
-define('PKG_VERSION','1.1.8');
+define('PKG_VERSION','1.1.9');
 define('PKG_RELEASE','pl');
 define('PKG_CATEGORY','Databackup');
 
