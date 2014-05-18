@@ -374,7 +374,7 @@ Class DBBackup {
 	        $dir = $this->config['base_path'].''.$this->dbName.'_'.date('Y_m_d').'__'.time().'/';
             $this->filePathData['folder'] = $dir;
     	    if( !is_dir($dir) ){
-                mkdir($dir);
+                $this->modx->cacheManager->writeTree($dir);
             }
         }
         // start the large SQL dump file:
